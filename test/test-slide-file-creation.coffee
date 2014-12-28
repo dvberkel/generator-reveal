@@ -112,3 +112,22 @@ describe 'Sub-Generator Slide', ->
                 /"attr": {/
             assert.fileContent 'slides/list.json',
                 /"data-background": "#ff0000"/
+
+    describe 'with --markdown and --directory option', ->
+        before (done) ->
+            helpers
+                .run(path.join __dirname, '../slide')
+                .withArguments([
+                    'Markdown in Directory',
+                    '--markdown',
+                    '--directory foo'
+                ])
+                .on('ready', init_list_dot_json_file)
+                .on 'end', done
+
+        it 'creates markdown slide in the slides/foo directory', ->
+            assert.file 'slides/foo'
+            assert.fileContent 'slides/foo/markdown-in-directory.md',
+                /##  Markdown in Directory/
+            assert fileContent 'slides/list.json',
+                /foo\/markdown-in-directory.md/
